@@ -1,0 +1,13 @@
+
+pw 	    ok   expansion : circle -> outer(-0.05),inner(0.05) /rectangle -> outer(0),inner(0.1)
+pz height   ok	 shrinkage : circle -> outer(0.05),inner(-0.05) /rectangle -> outer(0),inner(-0.1)
+inner/outer ok
+
+circle inner offset(constant)
+circle outer offset(-0.1mm diameter /-0.05mm radius) lose fit
+circle outer offset(-0.05mm diameter /-0.025mm radius) medium fit
+circle outer offset(0.0mm diameter /0.00mm radius) tight fit
+
+rectangle inner offset(constant)
+rectangle outer offset(constant) -> medium-tight fit
+
