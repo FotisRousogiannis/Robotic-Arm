@@ -44,6 +44,21 @@ import tty
 from servo_test import Driver, speed_to_pulse, CONT_CENTER_US, CONT_MIN_US, CONT_MAX_US
 
 
+# Greek keyboard layout sends different characters for the same physical
+# keys (a->α, d->δ, w->ς, s->σ, q->;). Map them back so the controls work
+# whatever the active layout is.
+GREEK_TO_LATIN = {
+    'α': 'a', 'Α': 'a',
+    'δ': 'd', 'Δ': 'd',
+    'ς': 'w', 'σ': 's', 'Σ': 's',
+    ';': 'q', '·': 'q',
+}
+
+
+def normalize_key(k: str) -> str:
+    return GREEK_TO_LATIN.get(k, k).lower()
+
+
 def getch() -> str:
     """Read a single keypress (no Enter needed)."""
     fd = sys.stdin.fileno()
@@ -123,7 +138,7 @@ def main(argv=None) -> int:
             r, _, _ = select.select([sys.stdin], [], [], 0.05)
             now = time.time()
             if r:
-                k = sys.stdin.read(1).lower()
+                k = normalize_key(sys.stdin.read(1))
                 if k == 'q' or k == '\x03':      # q or Ctrl+C
                     break
                 elif k == 'a':
