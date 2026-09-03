@@ -5,23 +5,41 @@ and still build the proper stack for the thesis.
 
 ```
 software/
-├── tools/          # Standalone scripts — NO ROS needed. Use these to
-│   └── servo_test.py   test the wrist & gearboxes right now.
-└── ros2_ws/        # ROS 2 workspace — the real control stack (later).
+├── firmware/       # ESP32 firmware — the on-board control per segment PCB.
+│   └── segment_controller/   PCA9685 + TCA9548A + AS5600, serial protocol.
+├── tools/          # Standalone scripts — NO ROS needed. Quick bench test
+│   └── servo_test.py   of a servo/gearbox straight off a PCA9685.
+└── ros2_ws/        # ROS 2 workspace — the host-side coordination stack.
     └── src/robotic_arm_driver/
 ```
+
+The real control is **distributed**: each segment PCB runs
+`firmware/segment_controller` on its ESP32 (servo drive + encoder
+feedback), and the ROS 2 host coordinates all segments. See
+[`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the topology.
+`tools/servo_test.py` is only for quick bench checks before the boards
+are wired in.
 
 ## Track 1 — Quick hardware tests (no ROS)
 
 Goal right now: **verify the wrist and its gearboxes** before building
 Link 1. `tools/servo_test.py` drives the PCA9685 directly.
 
-### On the Raspberry Pi (once)
+### On the Raspberry Pi — Ubuntu Server (once)
+Ubuntu Server has no `raspi-config`; enable I²C via the firmware config:
 ```bash
-sudo raspi-config          # Interface Options -> I2C -> enable
+sudo nano /boot/firmware/config.txt      # add:  dtparam=i2c_arm=on
+sudo apt install -y i2c-tools python3-pip
+sudo usermod -aG i2c $USER               # then log out/in
+sudo reboot
+# after reboot:
 pip install adafruit-circuitpython-pca9685 adafruit-blinka
-i2cdetect -y 1             # should show the PCA9685 at 0x40
+i2cdetect -y 1                           # should show PCA9685 at 0x40
 ```
+
+> Note: in the final design the ESP32 on each PCB drives the PCA9685, not
+> the Pi. This direct-from-Pi path is only for quick bench testing of a
+> servo/gearbox before the boards are in the loop.
 
 ### Test sequence (start gentle!)
 ```bash

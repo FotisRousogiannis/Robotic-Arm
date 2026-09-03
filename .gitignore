@@ -19,3 +19,13 @@ Thumbs.db
 # Build / slicer temp
 *.gcode
 *.tmp
+
+# PlatformIO / firmware build
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# ROS 2 build
+software/ros2_ws/build/
+software/ros2_ws/install/
+software/ros2_ws/log/
