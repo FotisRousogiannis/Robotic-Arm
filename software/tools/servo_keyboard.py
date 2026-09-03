@@ -76,9 +76,10 @@ def main(argv=None) -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--channel', type=int, default=0)
     ap.add_argument('--address', type=lambda x: int(x, 0), default=0x40)
-    ap.add_argument('--center', type=float, default=CONT_CENTER_US)
-    ap.add_argument('--min_us', type=float, default=CONT_MIN_US)
-    ap.add_argument('--max_us', type=float, default=CONT_MAX_US)
+    # All servos on this arm are identical: neutral 1600us, range 500-2500.
+    ap.add_argument('--center', type=float, default=1600.0)
+    ap.add_argument('--min_us', type=float, default=500.0)
+    ap.add_argument('--max_us', type=float, default=2500.0)
     ap.add_argument('--step', type=float, default=0.1, help='speed step per w/s')
     ap.add_argument('--start-speed', type=float, default=0.3,
                     help='initial speed magnitude (0..1)')
