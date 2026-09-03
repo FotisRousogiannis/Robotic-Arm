@@ -62,7 +62,10 @@ def main(argv=None) -> int:
     ap.add_argument('--start-speed', type=float, default=0.3,
                     help='initial speed magnitude (0..1)')
     ap.add_argument('--hold-timeout', type=float, default=0.25,
-                    help='stop this many seconds after a/d is released')
+                    help='hold mode: stop this many seconds after a/d released')
+    ap.add_argument('--toggle', action='store_true',
+                    help='toggle mode (terminal-friendly): tap a/d to start '
+                         'moving, tap space to stop — no key-hold needed')
     args = ap.parse_args(argv)
 
     if not sys.stdin.isatty():
@@ -91,8 +94,10 @@ def main(argv=None) -> int:
         drv.release(ch)
 
     print(__doc__)
-    print(f'--- controlling channel {ch}: HOLD a/d to move, release to stop '
-          f'(q to quit) ---')
+    mode_help = ('TAP a/d to move, space to stop' if args.toggle
+                 else 'HOLD a/d to move, release to stop')
+    print(f'--- channel {ch} [{ "toggle" if args.toggle else "hold" } mode]: '
+          f'{mode_help} (q to quit) ---')
     stop()
     apply()
 
@@ -122,8 +127,8 @@ def main(argv=None) -> int:
                     mag = max(0.0, mag - args.step); apply()
                 elif k == ' ':
                     moving = False; direction = 0; stop(); apply()
-            # No a/d repeat for a moment -> released -> stop.
-            if moving and (now - last_move) > hold_timeout:
+            # Hold mode only: no a/d repeat for a moment -> released -> stop.
+            if not args.toggle and moving and (now - last_move) > hold_timeout:
                 moving = False
                 direction = 0
                 stop()
