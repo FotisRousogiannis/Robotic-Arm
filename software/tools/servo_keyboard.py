@@ -6,14 +6,17 @@ feeling out a gearbox's speed and watching current on the PSU.
 
 Keys
 ----
-    a / d   spin left (CCW) / right (CW)
+    a / d   HOLD to spin left (CCW) / right (CW) — release to STOP
     w / s   speed up / slow down (steps)
-    space   stop (center pulse)
-    r       release (servo goes slack)
+    space   force stop
     q       quit (stops the servo first)
 
-Speed is a "ladder": w/s change the magnitude in fixed steps; a/d pick the
-direction and start moving. The current pulse is shown live.
+Hold-to-move: the servo turns only WHILE a or d is held down; the moment
+you let go it stops (the signal is cut). w/s set the speed magnitude (a
+"ladder"). The current pulse is shown live.
+
+Stopping is done by cutting the PWM signal (release), which halts a
+continuous servo reliably even if its neutral pulse isn't exactly 1500us.
 
 Run on the Pi (with the venv active):
     python3 servo_keyboard.py --channel 0
@@ -25,8 +28,10 @@ Continuous-servo pulse mapping (override if your servo differs):
 from __future__ import annotations
 
 import argparse
+import select
 import sys
 import termios
+import time
 import tty
 
 # Reuse the driver + mapping from the main bench tool.
@@ -56,6 +61,8 @@ def main(argv=None) -> int:
     ap.add_argument('--step', type=float, default=0.1, help='speed step per w/s')
     ap.add_argument('--start-speed', type=float, default=0.3,
                     help='initial speed magnitude (0..1)')
+    ap.add_argument('--hold-timeout', type=float, default=0.25,
+                    help='stop this many seconds after a/d is released')
     args = ap.parse_args(argv)
 
     if not sys.stdin.isatty():
@@ -78,36 +85,54 @@ def main(argv=None) -> int:
         print(f'\r ch{ch}  {arrow:5}  speed={speed:+.2f}  {pulse:6.0f}us  '
               f'[{bar:<20}]   ', end='', flush=True)
 
+    def stop():
+        # Cut the PWM signal entirely — the surest way to halt a continuous
+        # servo whose neutral pulse isn't exactly --center.
+        drv.release(ch)
+
     print(__doc__)
-    print(f'--- controlling channel {ch} — press keys (q to quit) ---')
-    drv.set_pulse_us(ch, args.center)  # start stopped
+    print(f'--- controlling channel {ch}: HOLD a/d to move, release to stop '
+          f'(q to quit) ---')
+    stop()
     apply()
+
+    # Hold-to-move: while a/d auto-repeats (key held), keep spinning; once the
+    # repeats stop (key released), a short timeout stops the servo.
+    hold_timeout = args.hold_timeout
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    moving = False
+    last_move = 0.0
     try:
+        tty.setraw(fd)
         while True:
-            k = getch().lower()
-            if k == 'q':
-                break
-            elif k == 'a':
-                direction = -1
-            elif k == 'd':
-                direction = 1
-            elif k == 'w':
-                mag = min(1.0, mag + args.step)
-            elif k == 's':
-                mag = max(0.0, mag - args.step)
-            elif k == ' ':
+            r, _, _ = select.select([sys.stdin], [], [], 0.05)
+            now = time.time()
+            if r:
+                k = sys.stdin.read(1).lower()
+                if k == 'q' or k == '\x03':      # q or Ctrl+C
+                    break
+                elif k == 'a':
+                    direction = -1; last_move = now; moving = True; apply()
+                elif k == 'd':
+                    direction = 1; last_move = now; moving = True; apply()
+                elif k == 'w':
+                    mag = min(1.0, mag + args.step); apply()
+                elif k == 's':
+                    mag = max(0.0, mag - args.step); apply()
+                elif k == ' ':
+                    moving = False; direction = 0; stop(); apply()
+            # No a/d repeat for a moment -> released -> stop.
+            if moving and (now - last_move) > hold_timeout:
+                moving = False
                 direction = 0
-            elif k == 'r':
-                drv.release(ch)
-                print('\n  released (servo slack) — press a/d to drive again')
-                continue
-            else:
-                continue
-            apply()
+                stop()
+                apply()
     except KeyboardInterrupt:
         pass
     finally:
-        drv.set_pulse_us(ch, args.center)   # always stop on exit
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        stop()
         print('\nstopped. bye.')
     return 0
 
