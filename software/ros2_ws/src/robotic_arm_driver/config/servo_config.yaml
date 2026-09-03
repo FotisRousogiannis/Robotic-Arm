@@ -1,0 +1,68 @@
+# Servo configuration for the 6-DOF robotic arm.
+#
+# Each joint maps to one or more PCA9685 channels. Joints driven by
+# multiple mirrored servos (e.g. the shoulder/elbow use paired motors)
+# list every channel; set "invert: true" on channels that face the
+# opposite direction so they rotate symmetrically.
+#
+# Angles are in degrees. "min_angle"/"max_angle" clamp the joint's
+# software travel; "pulse_min"/"pulse_max" are the servo's PWM pulse
+# widths (microseconds) at those mechanical extremes — tune per servo.
+
+servo_driver:
+  ros__parameters:
+    i2c_bus: 1              # Raspberry Pi 4 default I2C bus
+    pca9685_address: 0x40   # default PCA9685 I2C address
+    pwm_frequency: 50       # Hz, standard for analog/digital servos
+
+    # Order defines the joint index used on the /joint_commands topic.
+    joint_names:
+      - base
+      - shoulder
+      - elbow
+      - wrist
+      - gripper
+
+    joints:
+      base:
+        channels: [0]
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 90.0
+        pulse_min: 500
+        pulse_max: 2500
+
+      shoulder:            # Bone 1 — 4x mirrored 180deg servos
+        channels: [1, 2, 3, 4]
+        invert: [false, true, false, true]
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 90.0
+        pulse_min: 500
+        pulse_max: 2500
+
+      elbow:               # Bone 2 — 4x mirrored 270deg servos
+        channels: [5, 6, 7, 8]
+        invert: [false, true, false, true]
+        min_angle: 0.0
+        max_angle: 270.0
+        home: 135.0
+        pulse_min: 500
+        pulse_max: 2500
+
+      wrist:               # End effector orientation
+        channels: [9, 10]
+        invert: [false, true]
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 90.0
+        pulse_min: 500
+        pulse_max: 2500
+
+      gripper:             # End effector open/close
+        channels: [11]
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 0.0
+        pulse_min: 500
+        pulse_max: 2500
