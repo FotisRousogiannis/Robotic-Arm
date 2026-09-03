@@ -67,9 +67,8 @@ def main(argv=None) -> int:
     ap.add_argument('--step', type=float, default=0.1, help='speed step per w/s')
     ap.add_argument('--start-speed', type=float, default=0.3,
                     help='initial speed magnitude (0..1)')
-    ap.add_argument('--hold-timeout', type=float, default=0.5,
-                    help='hold mode: stop this many seconds after a/d released '
-                         '(bridges the terminal key-repeat delay)')
+    ap.add_argument('--hold-timeout', type=float, default=0.25,
+                    help='hold mode: stop this many seconds after a/d released')
     ap.add_argument('--toggle', action='store_true',
                     help='toggle mode (terminal-friendly): tap a/d to start '
                          'moving, tap space to stop — no key-hold needed')
