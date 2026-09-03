@@ -53,5 +53,10 @@ E                 # compare commanded vs actual (encoder) angle
 
 ## Roadmap
 - [ ] Closed-loop position control on the ESP32 (PID: encoder → servo)
-- [ ] Host link — decide protocol (micro-ROS / WiFi / serial bridge)
-- [ ] Publish joint state + accept targets from the ROS 2 host
+- [ ] Host link via **micro-ROS** (`env:esp32-microros` in `platformio.ini`):
+      each ESP32 is a ROS 2 node; host runs the micro-ROS Agent
+      (`ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888`).
+- [ ] Publish `/<seg>/joint_states`, subscribe `/<seg>/joint_commands`
+
+> Firmware/PCB work is on hold until the boards are built — the serial
+> firmware above is enough for current bench testing.

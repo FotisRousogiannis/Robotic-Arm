@@ -57,7 +57,7 @@ directly.
         ┌────────────────────────── Host (PC / Raspberry Pi 4) ──────────────────────────┐
         │   high-level control: targets out, joint state in, kinematics, planning        │
         └───────────────┬─────────────────────────────┬─────────────────────────────────┘
-                        │ (link: TBD)                 │ (link: TBD)
+                        │ (micro-ROS)                 │ (micro-ROS)
              ┌──────────┴──────────┐        ┌─────────┴───────────┐
              │  Base PCB (ESP32)   │        │  Wrist PCB (ESP32)  │   ... one per segment
              │  joints 1, 2, 3     │        │  joints 4, 5, 6     │
@@ -88,6 +88,36 @@ and can servo to a target position, compensating for gearbox backlash and
 servo droop. Encoders sit behind the **TCA9548A** because every AS5600
 answers at the same I²C address (0x36) — the ESP32 selects one mux channel
 at a time to read each encoder.
+
+### Host link — micro-ROS
+
+Each ESP32 runs **micro-ROS**, so every segment PCB is a first-class ROS 2
+node. The host (Ubuntu Server) runs the **micro-ROS Agent**, which bridges
+the ESP32 nodes onto the normal ROS 2 graph.
+
+```
+ESP32 (base)  ──micro-ROS──┐
+ESP32 (wrist) ──micro-ROS──┼──► micro-ROS Agent (host) ──► ROS 2 graph ──► robotic_arm_driver / MoveIt
+ESP32 (...)   ──micro-ROS──┘        (UDP over WiFi, or serial)
+```
+
+Suggested per-segment interface (namespaced by segment):
+
+| Topic                        | Dir       | Type                      |
+|------------------------------|-----------|---------------------------|
+| `/<seg>/joint_commands`      | host→ESP32| `sensor_msgs/JointState`  |
+| `/<seg>/joint_states`        | ESP32→host| `sensor_msgs/JointState`  (from AS5600) |
+
+- **Transport**: UDP over WiFi keeps each PCB wireless (only power to the
+  segment); serial is the fallback for bring-up/debug.
+- The ESP32 keeps its **local closed loop** (AS5600 → servo); micro-ROS
+  carries targets in and true positions out.
+- Run the agent on the host, e.g.
+  `ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888`.
+
+> The `segment_controller` firmware currently speaks a simple **serial**
+> protocol for bench testing. The micro-ROS transport is layered on top of
+> the same local control (see the firmware README roadmap).
 
 ## Electrical
 
