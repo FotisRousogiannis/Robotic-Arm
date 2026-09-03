@@ -15,8 +15,9 @@ Hold-to-move: the servo turns only WHILE a or d is held down; the moment
 you let go it stops (the signal is cut). w/s set the speed magnitude (a
 "ladder"). The current pulse is shown live.
 
-Stopping is done by cutting the PWM signal (release), which halts a
-continuous servo reliably even if its neutral pulse isn't exactly 1500us.
+Stopping sends the center pulse (--center, default 1500us). This servo
+holds still at center and SPINS when the signal is cut, so we never
+release it. If it still creeps at center, tune --center.
 
 Run on the Pi (with the venv active):
     python3 servo_keyboard.py --channel 0
@@ -89,9 +90,10 @@ def main(argv=None) -> int:
               f'[{bar:<20}]   ', end='', flush=True)
 
     def stop():
-        # Cut the PWM signal entirely — the surest way to halt a continuous
-        # servo whose neutral pulse isn't exactly --center.
-        drv.release(ch)
+        # This servo holds still at the center pulse (verified: 1500us = stop)
+        # and SPINS when the signal is cut. So stop = send the center pulse,
+        # never release. Tune --center if it still creeps.
+        drv.set_pulse_us(ch, args.center)
 
     print(__doc__)
     mode_help = ('TAP a/d to move, space to stop' if args.toggle
