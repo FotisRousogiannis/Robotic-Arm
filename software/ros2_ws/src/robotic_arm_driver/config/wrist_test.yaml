@@ -1,0 +1,49 @@
+# Wrist-only test profile.
+#
+# Use this to bring up and calibrate JUST the wrist (3 DOF) + gripper,
+# before Link 1 is built. It drives only the wrist channels so the base
+# stays put. Start with small target angles and verify direction/limits
+# before increasing travel.
+
+servo_driver:
+  ros__parameters:
+    i2c_bus: 1
+    pca9685_address: 0x40
+    pwm_frequency: 50
+
+    joint_names: [wrist_pitch, wrist_roll, wrist_yaw, gripper]
+
+    direct_joints: [wrist_yaw, gripper]
+    joints:
+      wrist_yaw:
+        channel: 8
+        invert: false
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 90.0
+        pulse_min: 500
+        pulse_max: 2500
+      gripper:
+        channel: 11
+        invert: false
+        min_angle: 0.0
+        max_angle: 180.0
+        home: 0.0
+        pulse_min: 500
+        pulse_max: 2500
+
+    differential_pairs: [wrist_diff]
+    differentials:
+      wrist_diff:
+        channel_a: 9
+        channel_b: 10
+        joint_pitch: wrist_pitch
+        joint_roll: wrist_roll
+        center_a: 135.0
+        center_b: 135.0
+        pitch_gain: 1.0
+        roll_gain: 1.0
+        servo_min_angle: 0.0
+        servo_max_angle: 270.0
+        pulse_min: 500
+        pulse_max: 2500

@@ -1,68 +1,77 @@
-# Servo configuration for the 6-DOF robotic arm.
+# Servo configuration for the 6-DOF robotic arm (full-arm profile).
 #
-# Each joint maps to one or more PCA9685 channels. Joints driven by
-# multiple mirrored servos (e.g. the shoulder/elbow use paired motors)
-# list every channel; set "invert: true" on channels that face the
-# opposite direction so they rotate symmetrically.
+# The arm has two DIFFERENTIAL mechanisms (base and wrist): in each, two
+# servos work together to produce two rotational DOF (pitch + roll) via
+# mixing. Independent DOF (yaw, gripper) map 1:1 to a single servo.
 #
-# Angles are in degrees. "min_angle"/"max_angle" clamp the joint's
-# software travel; "pulse_min"/"pulse_max" are the servo's PWM pulse
-# widths (microseconds) at those mechanical extremes — tune per servo.
+# Angles are in degrees. pulse_min/pulse_max are the PWM pulse widths (us)
+# at the servo's mechanical extremes servo_min_angle/servo_max_angle.
+# Every value here is a starting point — CALIBRATE on the real hardware.
 
 servo_driver:
   ros__parameters:
-    i2c_bus: 1              # Raspberry Pi 4 default I2C bus
-    pca9685_address: 0x40   # default PCA9685 I2C address
-    pwm_frequency: 50       # Hz, standard for analog/digital servos
+    i2c_bus: 1
+    pca9685_address: 0x40
+    pwm_frequency: 50
 
-    # Order defines the joint index used on the /joint_commands topic.
+    # Logical DOF exposed on /joint_commands (matched by name).
     joint_names:
-      - base
-      - shoulder
-      - elbow
-      - wrist
+      - base_pitch
+      - base_roll
+      - wrist_pitch
+      - wrist_roll
+      - wrist_yaw
       - gripper
 
+    # --- Independent (1:1) joints ---
+    direct_joints: [wrist_yaw, gripper]
     joints:
-      base:
-        channels: [0]
+      wrist_yaw:
+        channel: 8
+        invert: false
         min_angle: 0.0
         max_angle: 180.0
         home: 90.0
         pulse_min: 500
         pulse_max: 2500
-
-      shoulder:            # Bone 1 — 4x mirrored 180deg servos
-        channels: [1, 2, 3, 4]
-        invert: [false, true, false, true]
-        min_angle: 0.0
-        max_angle: 180.0
-        home: 90.0
-        pulse_min: 500
-        pulse_max: 2500
-
-      elbow:               # Bone 2 — 4x mirrored 270deg servos
-        channels: [5, 6, 7, 8]
-        invert: [false, true, false, true]
-        min_angle: 0.0
-        max_angle: 270.0
-        home: 135.0
-        pulse_min: 500
-        pulse_max: 2500
-
-      wrist:               # End effector orientation
-        channels: [9, 10]
-        invert: [false, true]
-        min_angle: 0.0
-        max_angle: 180.0
-        home: 90.0
-        pulse_min: 500
-        pulse_max: 2500
-
-      gripper:             # End effector open/close
-        channels: [11]
+      gripper:
+        channel: 11
+        invert: false
         min_angle: 0.0
         max_angle: 180.0
         home: 0.0
+        pulse_min: 500
+        pulse_max: 2500
+
+    # --- Differential mechanisms ---
+    # Motor angles: A = center_a + pitch_gain*pitch + roll_gain*roll
+    #               B = center_b + pitch_gain*pitch - roll_gain*roll
+    differential_pairs: [base_diff, wrist_diff]
+    differentials:
+      base_diff:
+        channel_a: 0
+        channel_b: 1
+        joint_pitch: base_pitch
+        joint_roll: base_roll
+        center_a: 90.0
+        center_b: 90.0
+        pitch_gain: 1.0
+        roll_gain: 1.0
+        servo_min_angle: 0.0
+        servo_max_angle: 180.0
+        pulse_min: 500
+        pulse_max: 2500
+
+      wrist_diff:
+        channel_a: 9
+        channel_b: 10
+        joint_pitch: wrist_pitch
+        joint_roll: wrist_roll
+        center_a: 135.0
+        center_b: 135.0
+        pitch_gain: 1.0
+        roll_gain: 1.0
+        servo_min_angle: 0.0
+        servo_max_angle: 270.0
         pulse_min: 500
         pulse_max: 2500
