@@ -64,8 +64,12 @@ def main(argv=None) -> int:
     ap.add_argument('--center-b', type=float, default=1600.0)
     ap.add_argument('--min_us', type=float, default=500.0)
     ap.add_argument('--max_us', type=float, default=2500.0)
+    # The two servos are mounted mirrored, so B is inverted by default to
+    # get clean pitch. Use the flags to flip either motor if your build
+    # differs.
     ap.add_argument('--invert-a', action='store_true', help='flip motor A direction')
-    ap.add_argument('--invert-b', action='store_true', help='flip motor B direction')
+    ap.add_argument('--invert-b', action='store_true',
+                    help='flip motor B back (default: B is already inverted)')
     ap.add_argument('--speed', type=float, default=0.4, help='speed magnitude 0..1')
     ap.add_argument('--step', type=float, default=0.1)
     ap.add_argument('--hold-timeout', type=float, default=0.25)
@@ -78,7 +82,7 @@ def main(argv=None) -> int:
     drv = Driver(address=args.address)
     ca, cb = args.a, args.b
     sign_a = -1.0 if args.invert_a else 1.0
-    sign_b = -1.0 if args.invert_b else 1.0
+    sign_b = 1.0 if args.invert_b else -1.0   # mirrored by default
     mag = clamp(args.speed, 0.0, 1.0)
 
     def drive(pitch, roll):
