@@ -8,8 +8,13 @@ Keys
 ----
     a / d   HOLD to spin left (CCW) / right (CW) — release to STOP
     w / s   speed up / slow down (steps)
+    [ / ]   trim the stop pulse down / up (CALIBRATE the neutral)
     space   force stop
     q       quit (stops the servo first)
+
+FIRST TIME: if the servo creeps while idle, tap [ or ] until it sits
+perfectly still — that finds this servo's true neutral. Note the shown
+center value and pass it next time as --center.
 
 Hold-to-move: the servo turns only WHILE a or d is held down; the moment
 you let go it stops (the signal is cut). w/s set the speed magnitude (a
@@ -67,6 +72,8 @@ def main(argv=None) -> int:
     ap.add_argument('--toggle', action='store_true',
                     help='toggle mode (terminal-friendly): tap a/d to start '
                          'moving, tap space to stop — no key-hold needed')
+    ap.add_argument('--trim', type=float, default=5.0,
+                    help='microseconds per [ / ] center-trim keypress')
     args = ap.parse_args(argv)
 
     if not sys.stdin.isatty():
@@ -87,7 +94,7 @@ def main(argv=None) -> int:
         arrow = {-1: 'CCW <', 0: 'STOP', 1: '> CW'}[direction]
         bar = '#' * int(mag * 20)
         print(f'\r ch{ch}  {arrow:5}  speed={speed:+.2f}  {pulse:6.0f}us  '
-              f'[{bar:<20}]   ', end='', flush=True)
+              f'center={args.center:.0f}us  [{bar:<20}]   ', end='', flush=True)
 
     def stop():
         # This servo holds still at the center pulse (verified: 1500us = stop)
@@ -127,6 +134,16 @@ def main(argv=None) -> int:
                     mag = min(1.0, mag + args.step); apply()
                 elif k == 's':
                     mag = max(0.0, mag - args.step); apply()
+                elif k == '[':                    # trim center down
+                    args.center -= args.trim
+                    if not moving:
+                        stop()
+                    apply()
+                elif k == ']':                    # trim center up
+                    args.center += args.trim
+                    if not moving:
+                        stop()
+                    apply()
                 elif k == ' ':
                     moving = False; direction = 0; stop(); apply()
             # Hold mode only: no a/d repeat for a moment -> released -> stop.
