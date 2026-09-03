@@ -133,6 +133,43 @@ def cmd_diff(drv, args):
     drv.set_pulse_us(args.b, angle_to_pulse(b, args.min, args.max))
 
 
+def cmd_move(drv, args):
+    """Move at a controlled rate (deg/s) and report the timing.
+
+    Useful for measuring speed and, held at the end, current draw on the
+    bench PSU. Interpolates from --start to --end at ~--speed deg/s.
+    """
+    start = args.start if args.start is not None else (args.min + args.max) / 2
+    end = args.end
+    speed = max(1e-3, args.speed)
+    dt = args.dt
+    step = speed * dt
+    print(f'move ch{args.channel}: {start} -> {end} deg at {speed} deg/s '
+          f'(servo range {args.min}..{args.max})')
+    t0 = time.time()
+    for angle in _frange(start, end, step):
+        drv.set_pulse_us(args.channel, angle_to_pulse(angle, args.min, args.max))
+        time.sleep(dt)
+    drv.set_pulse_us(args.channel, angle_to_pulse(end, args.min, args.max))
+    elapsed = time.time() - t0
+    travel = abs(end - start)
+    eff = travel / elapsed if elapsed > 0 else 0.0
+    print(f'  done: {travel:.1f} deg in {elapsed:.2f} s '
+          f'-> {eff:.1f} deg/s effective')
+    print('  >> read CURRENT (A) on your PSU display now while it holds <<')
+
+
+def cmd_hold(drv, args):
+    """Drive to an angle and hold, so you can read current on the PSU."""
+    print(f'hold ch{args.channel} -> {args.angle} deg for {args.seconds}s')
+    drv.set_pulse_us(args.channel, angle_to_pulse(args.angle, args.min, args.max))
+    print('  >> read CURRENT (A) on your PSU display now <<')
+    time.sleep(args.seconds)
+    if args.release:
+        drv.release(args.channel)
+        print('  released')
+
+
 def cmd_release(drv, args):
     for ch in args.channels:
         drv.release(ch)
@@ -184,6 +221,23 @@ def build_parser():
     s.add_argument('--roll', type=float, default=0.0)
     s.add_argument('--center', type=float, default=135.0, help='servo center angle')
     s.set_defaults(func=cmd_diff)
+
+    s = sub.add_parser('move', parents=[common],
+                       help='move at a controlled speed (deg/s), timed')
+    s.add_argument('--channel', type=int, required=True)
+    s.add_argument('--start', type=float, default=None, help='default: mid-range')
+    s.add_argument('--end', type=float, required=True)
+    s.add_argument('--speed', type=float, default=30.0, help='deg/s')
+    s.add_argument('--dt', type=float, default=0.02, help='update period (s)')
+    s.set_defaults(func=cmd_move)
+
+    s = sub.add_parser('hold', parents=[common],
+                       help='hold an angle so you can read PSU current')
+    s.add_argument('--channel', type=int, required=True)
+    s.add_argument('--angle', type=float, required=True)
+    s.add_argument('--seconds', type=float, default=5.0)
+    s.add_argument('--release', action='store_true', help='release after holding')
+    s.set_defaults(func=cmd_hold)
 
     s = sub.add_parser('release', parents=[common], help='stop driving channels (go slack)')
     s.add_argument('--channels', type=int, nargs='+', required=True)
