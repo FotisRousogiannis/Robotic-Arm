@@ -170,6 +170,56 @@ def cmd_hold(drv, args):
         print('  released')
 
 
+# --- Continuous-rotation servo helpers -------------------------------------
+# A continuous servo interprets pulse width as SPEED, not position:
+#   ~center_us  -> stop
+#   > center_us -> spin one way (faster toward max_us)
+#   < center_us -> spin the other way (faster toward min_us)
+CONT_CENTER_US = 1500.0
+CONT_MIN_US = 1000.0
+CONT_MAX_US = 2000.0
+
+
+def speed_to_pulse(speed, center=CONT_CENTER_US, lo=CONT_MIN_US, hi=CONT_MAX_US):
+    speed = max(-1.0, min(1.0, speed))
+    return center + speed * ((hi - center) if speed >= 0 else (center - lo))
+
+
+def cmd_spin(drv, args):
+    """Spin a continuous servo at --speed (-1..1) for --seconds, then stop."""
+    pulse = speed_to_pulse(args.speed, args.center, args.min_us, args.max_us)
+    print(f'spin ch{args.channel}: speed={args.speed:+.2f} '
+          f'-> {pulse:.0f} us for {args.seconds}s')
+    drv.set_pulse_us(args.channel, pulse)
+    print('  >> read CURRENT (A) on your PSU while it spins <<')
+    t0 = time.time()
+    try:
+        time.sleep(args.seconds)
+    finally:
+        drv.set_pulse_us(args.channel, args.center)  # stop
+        print(f'  stopped after {time.time() - t0:.2f}s (center {args.center:.0f} us)')
+        if args.release:
+            drv.release(args.channel)
+            print('  released')
+
+
+def cmd_pulse(drv, args):
+    """Send a raw pulse width (microseconds) — full manual control."""
+    print(f'pulse ch{args.channel} <- {args.us:.0f} us')
+    drv.set_pulse_us(args.channel, args.us)
+    if args.seconds > 0:
+        time.sleep(args.seconds)
+        drv.set_pulse_us(args.channel, args.center)
+        print(f'  back to center ({args.center:.0f} us)')
+
+
+def cmd_stop(drv, args):
+    """Stop continuous servo(s): send center pulse (no rotation)."""
+    for ch in args.channels:
+        print(f'stop ch{ch} -> {args.center:.0f} us')
+        drv.set_pulse_us(ch, args.center)
+
+
 def cmd_release(drv, args):
     for ch in args.channels:
         drv.release(ch)
@@ -238,6 +288,36 @@ def build_parser():
     s.add_argument('--seconds', type=float, default=5.0)
     s.add_argument('--release', action='store_true', help='release after holding')
     s.set_defaults(func=cmd_hold)
+
+    # --- Continuous-rotation servo commands ---
+    cont = argparse.ArgumentParser(add_help=False)
+    cont.add_argument('--center', type=float, default=CONT_CENTER_US,
+                      help='stop pulse width, us (default 1500)')
+    cont.add_argument('--min_us', type=float, default=CONT_MIN_US,
+                      help='pulse at full reverse (default 1000)')
+    cont.add_argument('--max_us', type=float, default=CONT_MAX_US,
+                      help='pulse at full forward (default 2000)')
+
+    s = sub.add_parser('spin', parents=[common, cont],
+                       help='continuous servo: spin at speed (-1..1) for N s')
+    s.add_argument('--channel', type=int, required=True)
+    s.add_argument('--speed', type=float, required=True, help='-1..1 (0 = stop)')
+    s.add_argument('--seconds', type=float, default=2.0)
+    s.add_argument('--release', action='store_true')
+    s.set_defaults(func=cmd_spin)
+
+    s = sub.add_parser('pulse', parents=[common, cont],
+                       help='send a raw pulse width (us)')
+    s.add_argument('--channel', type=int, required=True)
+    s.add_argument('--us', type=float, required=True)
+    s.add_argument('--seconds', type=float, default=0.0,
+                   help='if >0, hold this long then return to center')
+    s.set_defaults(func=cmd_pulse)
+
+    s = sub.add_parser('stop', parents=[common, cont],
+                       help='stop continuous servo(s) (center pulse)')
+    s.add_argument('--channels', type=int, nargs='+', required=True)
+    s.set_defaults(func=cmd_stop)
 
     s = sub.add_parser('release', parents=[common], help='stop driving channels (go slack)')
     s.add_argument('--channels', type=int, nargs='+', required=True)
