@@ -33,6 +33,8 @@ Run on the Pi (venv active), e.g.:
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import select
 import sys
 import termios
@@ -41,6 +43,19 @@ import tty
 
 from servo_test import Driver, speed_to_pulse
 from servo_keyboard import normalize_key
+
+CALIB_PATH = os.path.join(os.path.dirname(__file__), 'arm_calibration.json')
+
+
+def load_joint(name):
+    """Load one differential joint's calibration from arm_calibration.json."""
+    with open(CALIB_PATH) as f:
+        calib = json.load(f)
+    servo = calib.get('servo', {})
+    joint = calib['joints'][name]
+    if joint.get('type') != 'differential':
+        raise SystemExit(f'joint "{name}" is not a differential')
+    return servo, joint
 
 # roll/pitch use w s a d; also accept + / - and space/q
 EXTRA = {'ς': 'w', 'σ': 's', 'α': 'a', 'δ': 'd'}
@@ -57,6 +72,8 @@ def clamp(x, lo=-1.0, hi=1.0):
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--joint', help='load channels/neutral/invert from '
+                    'arm_calibration.json (e.g. base, wrist)')
     ap.add_argument('--a', type=int, default=0, help='motor A channel')
     ap.add_argument('--b', type=int, default=1, help='motor B channel')
     ap.add_argument('--address', type=lambda x: int(x, 0), default=0x40)
@@ -64,16 +81,27 @@ def main(argv=None) -> int:
     ap.add_argument('--center-b', type=float, default=1600.0)
     ap.add_argument('--min_us', type=float, default=500.0)
     ap.add_argument('--max_us', type=float, default=2500.0)
-    # The two servos are mounted mirrored, so B is inverted by default to
-    # get clean pitch. Use the flags to flip either motor if your build
-    # differs.
-    ap.add_argument('--invert-a', action='store_true', help='flip motor A direction')
-    ap.add_argument('--invert-b', action='store_true',
-                    help='flip motor B back (default: B is already inverted)')
+    # Mirrored servos need one motor inverted for clean pitch. Prefer
+    # --joint base (reads this from arm_calibration.json); the flags are
+    # for manual runs.
+    ap.add_argument('--invert-a', action='store_true', help='invert motor A direction')
+    ap.add_argument('--invert-b', action='store_true', help='invert motor B direction')
     ap.add_argument('--speed', type=float, default=0.4, help='speed magnitude 0..1')
     ap.add_argument('--step', type=float, default=0.1)
     ap.add_argument('--hold-timeout', type=float, default=0.25)
     args = ap.parse_args(argv)
+
+    if args.joint:
+        servo, joint = load_joint(args.joint)
+        args.a = joint['channel_a']
+        args.b = joint['channel_b']
+        args.invert_a = joint.get('invert_a', False)
+        args.invert_b = joint.get('invert_b', False)
+        args.center_a = args.center_b = float(servo.get('neutral_us', 1600))
+        args.min_us = float(servo.get('min_us', 500))
+        args.max_us = float(servo.get('max_us', 2500))
+        print(f'loaded joint "{args.joint}": A=ch{args.a} B=ch{args.b} '
+              f'neutral={args.center_a:.0f}us invert_b={args.invert_b}')
 
     if not sys.stdin.isatty():
         print('Needs an interactive terminal (real TTY over SSH).')
@@ -82,7 +110,7 @@ def main(argv=None) -> int:
     drv = Driver(address=args.address)
     ca, cb = args.a, args.b
     sign_a = -1.0 if args.invert_a else 1.0
-    sign_b = 1.0 if args.invert_b else -1.0   # mirrored by default
+    sign_b = -1.0 if args.invert_b else 1.0
     mag = clamp(args.speed, 0.0, 1.0)
 
     def drive(pitch, roll):

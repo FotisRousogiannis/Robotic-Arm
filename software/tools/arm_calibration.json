@@ -1,0 +1,31 @@
+{
+  "_comment": "Bench calibration for the robotic arm servos. Single source of truth for the standalone tools (servo_keyboard.py / servo_diff_keyboard.py). Load a joint with --joint <name>. Pulse widths in microseconds. All servos on this arm are identical continuous-rotation units.",
+
+  "servo": {
+    "neutral_us": 1600,
+    "min_us": 500,
+    "max_us": 2500
+  },
+
+  "joints": {
+    "base": {
+      "type": "differential",
+      "channel_a": 0,
+      "channel_b": 1,
+      "invert_a": false,
+      "invert_b": true,
+      "status": "calibrated",
+      "notes": "Base pitch+roll. Mirrored servos -> motor B inverted for clean pitch. Verified on the bench."
+    },
+
+    "wrist": {
+      "type": "differential",
+      "channel_a": 9,
+      "channel_b": 10,
+      "invert_a": false,
+      "invert_b": true,
+      "status": "TODO",
+      "notes": "Not yet calibrated on hardware — channels are the planned wiring."
+    }
+  }
+}
