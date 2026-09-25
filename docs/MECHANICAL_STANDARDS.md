@@ -72,7 +72,7 @@ Standardize on the set already in use:
 - Current **module 1, z100** is **undersized for 5 kg** (tooth force ~740 N
   operating needs ~55 mm face at m1 — impossible).
 - **Target spec (5 kg): module 2.5, z40 (keeps Ø100), face ~15–18 mm,
-  PA-CF** (or Nylon ~22 mm) + firmware torque limit. See MECHANICAL_ANALYSIS.md.
+  PC** (available; strong + high Tg ~147°C) or PA-CF, face ~18 mm + firmware torque limit. See MECHANICAL_ANALYSIS.md.
 
 ## 5. Couplings & interfaces
 - **Output shaft → bevel gear**: spline (see §9a) — carries actuator torque

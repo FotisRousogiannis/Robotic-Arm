@@ -113,9 +113,10 @@ Required face width vs module (keep Ø100):
 | 3 | 33 | ~20 mm ✅ | ~12 mm ✅ |
 
 **Recommended (keeps Ø100, 1:1 miter, 5 kg target):** bevel **module 2.5,
-z=40, 20° PA**, face **~15–18 mm**, **PA-CF** (or plain Nylon at ~22 mm) +
-firmware torque limit. Module 1 is undersized — raise the module, not the
-diameter.
+z=40, 20° PA**, face **~18 mm**, **PC** (available; σ≈40 MPa, high Tg ~147°C
+resists servo heat) + firmware torque limit. Module 1 is undersized at any
+practical face — raise the module, not the diameter. PC prints hot (~270°C,
+enclosure); add PTFE grease or use PC-CF for better wear.
 
 Levers (any/all): ↑module (2.5–3), ↑face (≤23 mm), PA-CF material, ↑bevel
 diameter (Ø150 → F_t ≈ 490 N so m2 suffices), torque limit.
