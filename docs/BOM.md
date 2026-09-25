@@ -59,8 +59,32 @@ short stub, not a long steel rod (and the bore can pass cables through).
 | bone2 | 20 | ❓ | ❓ |
 | wrist | 15 | ❓ | ❓ |
 
-## Gears (differentials & reductions)
-_Standard: 20° pressure angle; module TBD from existing prints._
+## Drivetrain — planetary gearbox (per joint)
+
+**2-stage planetary, 1:6 × 1:6 = 1:36 total.** Output shaft Ø25 on a
+**6005** bearing. **AS5600 on the output** → true joint angle after
+reduction.
+
+Performance (servo QY3240MG 40 kg + 1:36, ~0.8 efficiency):
+| | Servo | Output (÷36) |
+|--|-------|--------------|
+| Speed (no-load) | ~300°/s | **~8.3°/s** (90° in ~11 s) |
+| Torque (stall) | 38 kg·cm | **~1090 kg·cm ≈ 107 N·m** (≈35 N·m continuous) |
+
+> Trade-off: huge torque, slow. If more speed is wanted, a 1:18 variant
+> (1:6 × 1:3) doubles output speed with still-ample torque.
+
+Planetary standard (per 1:6 stage — ratio = 1 + Zring/Zsun, so Zring/Zsun = 5):
+| Element | Teeth |
+|---------|-------|
+| Sun | 12 |
+| Planet | 24 (×3 or ×4) |
+| Ring | 60 |
+- module: common per stage, 20° PA (proposed 1.0; 1.5 on output for torque)
+- assembly check: (Zsun+Zring)=72 divisible by 3 and 4 ✓
+
+## Gears — differentials
+_Standard: 20° pressure angle; miter 1:1 @90°; module per envelope._
 
 | Use | Type | module / teeth | bore | Qty | Status |
 |-----|------|----------------|------|-----|--------|
