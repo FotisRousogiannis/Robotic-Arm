@@ -123,22 +123,28 @@ The shaft has two sections: a plain **Ø25 k6 journal** for the 6005 bearing,
 and a **splined section** where the bevel gear mounts (spline is NOT at the
 bearing seat).
 
-### DIN 5480 spline values (enter in the Fusion gear generator)
-| Parameter | Value |
-|-----------|-------|
-| Module m | 1 |
-| Teeth z | 24 (= dB/m − 1.1 = 23.9 → 24) |
-| Pressure angle α | 30° |
-| Profile shift x | −0.05 |
-| Reference diameter dB | 25 mm |
-| Pitch diameter (m·z) | 24.00 mm |
-| Base diameter (d·cos30°) | 20.78 mm |
-| Shaft designation | `W 25×1×24×8f` |
-| Bevel bore designation | `N 25×1×24×9H` (same params, internal) |
-| **Print clearance** | **0.10–0.15 mm** backlash (printers run oversize) |
+### DIN 5480 spline values — from SplineCALC (DIN preferred pair)
+**Designation: `DIN 5480 – 25 × 1.25 × 18 × 9H/8f`** (30° PA)
 
-- Shaft & bevel bore must use **identical** m/z/α; the generator derives
-  tip/root automatically.
+| Parameter | Shaft (external, 8f) | Hub / bevel bore (internal, 9H) |
+|-----------|----------------------|----------------------------------|
+| Reference diameter dB | 25.000 | 25.000 |
+| Module m | 1.25 | 1.25 |
+| Teeth z | 18 | 18 |
+| Addendum mod. x | **+0.450** | **−0.450** |
+| Pitch diameter d | 22.500 | 22.500 |
+| Base diameter db | 19.486 | 19.486 |
+| Tip diameter da | 24.750 | 22.500 |
+| Root diameter df | 22.444 | 25.250 |
+| Engagement length Le | 15 mm | 15 mm |
+| Backlash j (min/max) | 0.038 / 0.284 mm | — |
+
+- Chosen over m1/z24: **module 1.25 = coarser, stronger teeth** (better given
+  the printed-gear strength concern).
+- The 9H/8f pair already includes backlash (j = 0.038–0.284 mm); for 3D print
+  add a touch more if it binds.
+- Export the profile from SplineCALC (DXF shaft / DXF hub) straight into
+  Fusion, or enter the values above.
 - **Axial retention** (so the bevel doesn't slide off) — **as built**:
   a **heat-set insert (M4/M5) in the shaft end** + an **ISO 4762 screw +
   washer** through the bevel/cap that clamps it against a printed shoulder.
