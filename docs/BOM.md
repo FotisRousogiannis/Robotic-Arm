@@ -49,15 +49,13 @@ Quantities (from the electrical components list):
 
 ## Bearings (deep-groove ball, 2RS sealed)
 
-| Bearing | bore × OD × W (mm) | Notes | Likely joint | Status |
-|---------|--------------------|-------|--------------|--------|
-| 6902 2RS | 15 × 28 × 7 | thin-section, compact | wrist (light) | ✅ |
-| 6002 2RS | 15 × 32 × 9 | standard 15 mm | wrist / small | ✅ |
-| 6004 2RS | 20 × 42 × 12 | mid | bone2 | ✅ |
-| 6005 2RS | 25 × 47 × 12 | mid-large | bone1 | ✅ |
-| 6208 2RS | 40 × 80 × 18 | heavy, large | **base** (main rotation) | ✅ |
-
-> "Likely joint" is a proposal — confirm which bearing sits where.
+| Bearing | bore × OD × W (mm) | Use (actual) | Status |
+|---------|--------------------|--------------|--------|
+| 6002 2RS | 15 × 32 × 9 | **planet gears** (planet rides on it) | ✅ |
+| 6005 2RS | 25 × 47 × 12 | **shafts / joint output axes** (Ø25) | ✅ |
+| 6902 2RS | 15 × 28 × 7 | ❓ TBD | ✅ |
+| 6004 2RS | 20 × 42 × 12 | ❓ TBD | ✅ |
+| 6208 2RS | 40 × 80 × 18 | ❓ likely base rotation | ✅ |
 
 ## Shafts / hubs (Ø = bearing bore, h7 fit)
 

@@ -15,13 +15,13 @@ confirmation against existing parts.
 ## 2. Bearings (deep-groove ball, 2RS sealed)
 Standardize on the set already in use:
 
-| Bearing | bore × OD × W (mm) | Use |
-|---------|--------------------|-----|
-| 6902 2RS | 15 × 28 × 7 | wrist (thin/compact) |
-| 6002 2RS | 15 × 32 × 9 | small joints |
-| 6004 2RS | 20 × 42 × 12 | bone2 |
-| 6005 2RS | 25 × 47 × 12 | bone1 / gearbox output |
-| 6208 2RS | 40 × 80 × 18 | base (main rotation) |
+| Bearing | bore × OD × W (mm) | Use (actual) |
+|---------|--------------------|--------------|
+| 6002 2RS | 15 × 32 × 9 | **planet gears** (each planet rotates on a 6002) |
+| 6005 2RS | 25 × 47 × 12 | **shafts / joint output axes** (Ø25) |
+| 6902 2RS | 15 × 28 × 7 | ❓ (thin-section, TBD) |
+| 6004 2RS | 20 × 42 × 12 | ❓ TBD |
+| 6208 2RS | 40 × 80 × 18 | ❓ likely base main rotation, TBD |
 
 ## 3. Shafts / hubs
 - **Shaft Ø = bearing bore**, tolerance **h7** (slip/press per fit needed).
@@ -29,12 +29,11 @@ Standardize on the set already in use:
   inner race), leaving the bore **hollow for cable routing**.
 - A **flat / D-cut** where a set-screw lands, to prevent slip.
 
-| Joint | Ø (=bore) | Bearing |
-|-------|-----------|---------|
-| base | 40 | 6208 |
-| bone1 | 25 | 6005 |
-| bone2 | 20 | 6004 |
-| wrist | 15 | 6002 / 6902 |
+| Element | Ø (=bore) | Bearing |
+|---------|-----------|---------|
+| output / joint shaft | 25 | 6005 |
+| planet gear | 15 | 6002 |
+| base main rotation | 40 | 6208 (TBD) |
 
 ## 4. Gears — global rules
 - **Pressure angle: 20°** everywhere (non-negotiable for meshing).
