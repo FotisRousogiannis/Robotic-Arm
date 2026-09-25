@@ -75,7 +75,10 @@ Standardize on the set already in use:
 - **Servo output spline: 25T** (standard for 35–40 kg standard-size servos;
   spline Ø ≈ 5.9 mm — confirm by counting teeth / checking the horns) →
   standard **25T spline hub / disc horn** as the servo interface everywhere.
-- **servo → sun gear** of the planetary via a 25T spline hub.
+- **servo → sun gear**: uses the **stock metal servo horn** (25T, included
+  with the servo). The sun gear (or a printed adapter) bolts onto the horn
+  through its screw holes — no separate hub needed. Standardize the sun/
+  adapter to match the horn's bolt pattern.
 - **shaft ↔ shaft**: **clamp-type coupling** (no backlash) sized to shaft Ø,
   preferred over set-screw for precision.
 
@@ -111,7 +114,11 @@ shaft_d25_L120_h7.stl           shaft Ø25, length 120, h7
 - [x] Planetary: helical, mₙ=1, 30° helix, sun 16 / planet 32 (×3) / ring 80
 - [x] Planet count: 3
 
+## Confirmed (cont.)
+- [x] Servo interface: stock metal 25T horn drives the sun gear
+- [x] Servo spline: 25T
+
 ## Open items to confirm
-- [ ] Servo spline tooth count (25T?)
 - [ ] Bevel gear module/teeth (needs differential envelope)
 - [ ] Differential flange PCD (proposed 30 mm)
+- [ ] Placement of remaining bearings (6208 / 6004 / 6902)
