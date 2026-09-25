@@ -71,7 +71,10 @@ Standardize on the set already in use:
 - Module & teeth sized to the mechanism envelope (❓ pending base/wrist space).
 - Bore = shaft/hub Ø of that joint.
 
-## 5. Couplings & servo interface
+## 5. Couplings & interfaces
+- **Output shaft → bevel gear**: spline (see §9a) — carries actuator torque
+  into the differential.
+- **Gearbox housing → arm body**: ISO 9409-1 flange (see §9b).
 - **Servo output spline: 25T** (standard for 35–40 kg standard-size servos;
   spline Ø ≈ 5.9 mm — confirm by counting teeth / checking the horns) →
   standard **25T spline hub / disc horn** as the servo interface everywhere.
@@ -100,21 +103,31 @@ planet_m1.0_z24_sun12_ring60.stl
 shaft_d25_L120_h7.stl           shaft Ø25, length 120, h7
 ```
 
-## 9. Output interface — ISO (gearbox → Link)
+## 9. Output interfaces — ISO
 
-### Output shaft (Ø25, on 6005)
+Two distinct interfaces per actuator:
+```
+servo → planetary(1:36) → OUTPUT SHAFT ──[spline]──► BEVEL gear → differential
+                          gearbox housing ──[FLANGE ISO 9409-1]──► arm body (mount)
+```
+
+### 9a. Output shaft → bevel gear (torque path)
+Drives the differential's bevel gear — **backlash & centering are critical**
+here (differential mixing degrades with play), so **spline preferred over
+key**.
 | Feature | Standard | Value |
 |---------|----------|-------|
-| Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** (light interference) |
-| Torque transmission | DIN 6885-1 / ISO 773 | **parallel key 8×7 mm**, shaft keyway depth 4.0 mm |
+| Torque coupling | **spline** — DIN 5480 / involute (or ISO 4156) | low backlash, self-centering, distributes torque |
+| Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** |
 | General tolerances | ISO 2768-m | non-critical dims |
 | End chamfers | — | 1×45° |
 
-> Alternative: transmit torque **directly through the flange** (bolted to a
-> shoulder) instead of a key — often cleaner on printed parts.
+> Spline chosen over a parallel key because it is printed anyway (no
+> machining cost) and gives less backlash — important for clean pitch/roll
+> decoupling in the differential. A DIN 6885 key remains a simpler fallback.
 
-### Flange (ISO 9409-1 robot mechanical interface)
-Standard circular flange = pitch circle + bolt count + centering spigot.
+### 9b. Flange → arm body (mounting)
+Mounts/reacts the gearbox housing to the arm structure — **ISO 9409-1**.
 **Default: ISO 9409-1-50-4-M6**
 - PCD **50 mm**, **4 × M6** (ISO 4762)
 - centering **spigot H7/h7** (alignment by fit, not screws)
@@ -122,7 +135,7 @@ Standard circular flange = pitch circle + bolt count + centering spigot.
   → M6 ample ✅
 - Heavier option: **ISO 9409-1-63-6-M6** (PCD 63, 6 × M6)
 
-Use the same flange on base / wrist / Link for interchangeability.
+Use the same flange across base / wrist / links for interchangeability.
 
 ## 10. Standard parts — sourcing (CAD)
 Pull ready, dimensioned models into Fusion; model only custom parts.
