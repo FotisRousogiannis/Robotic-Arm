@@ -66,10 +66,12 @@ Standardize on the set already in use:
 - Housing parts (CAD): Ring Gear, Planet Carrier, Planet Carrier Rotating
   Base, Cap, Servo holder, Servo Cap, servo arm cap.
 
-### 4b. Bevel gears (differentials)
-- **Miter 1:1** (equal teeth), **90°**, 20° PA.
-- Module & teeth sized to the mechanism envelope (❓ pending base/wrist space).
-- Bore = shaft/hub Ø of that joint.
+### 4b. Bevel gears (differentials) — actual
+- **module 1, z = 100, 20° PA** → pitch diameter **100 mm**, 90°.
+- Bore = DIN 5480 internal spline (mounts on the gearbox output shaft).
+- Large pitch radius (50 mm) → lower tooth force: F_t = T/r = 37/0.05 ≈ 740 N
+  operating (per gearbox), vs ~2240 N at stall.
+- ❓ Confirm: mating (output/cross) gear teeth & whether 1:1, and face width.
 
 ## 5. Couplings & interfaces
 - **Output shaft → bevel gear**: spline (see §9a) — carries actuator torque

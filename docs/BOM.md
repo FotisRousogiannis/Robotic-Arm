@@ -96,12 +96,12 @@ Planetary (actual) — **helical, mₙ=1, helix 30°, 20° PA**:
   distance sun↔planet = 27.7 mm
 
 ## Gears — differentials
-_Standard: 20° pressure angle; miter 1:1 @90°; module per envelope._
+Bevel gears: **module 1, z=100, 20° PA** → pitch Ø 100 mm, @90°.
 
-| Use | Type | module / teeth | bore | Qty | Status |
-|-----|------|----------------|------|-----|--------|
-| base differential | bevel/miter @90° | | | | ❓ |
-| wrist differential | bevel/miter @90° | | | | ❓ |
+| Use | Type | module / teeth | bore | Status |
+|-----|------|----------------|------|--------|
+| base differential | bevel @90° | m1 / z100 / 20° PA | DIN 5480 spline | ✅ in use |
+| wrist differential | bevel @90° | m1 / z100 / 20° PA | DIN 5480 spline | ✅ in use |
 
 ## Couplings
 _bore = shaft Ø; interface = servo spline. TBD._
