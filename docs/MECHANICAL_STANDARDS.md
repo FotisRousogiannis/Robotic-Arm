@@ -121,7 +121,7 @@ bearing seat).
 
 | Feature | Standard | Value |
 |---------|----------|-------|
-| Spline (metric, involute, 30° PA) | **DIN 5480** (or ISO 4156) | shaft `W 25×1×23×8f` · hub `N 25×1×23×9H` |
+| Spline (metric, involute, 30° PA) | **DIN 5480** (or ISO 4156) | shaft `W 25×1×24×8f` · hub `N 25×1×24×9H` (z = dB/m − 1.1 = 24) |
 | Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** |
 | General tolerances | ISO 2768-m | non-critical dims |
 | End chamfers | — | 1×45° |
