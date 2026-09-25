@@ -115,12 +115,21 @@ servo → planetary(1:36) → OUTPUT SHAFT ──[spline]──► BEVEL gear �
 Drives the differential's bevel gear — **backlash & centering are critical**
 here (differential mixing degrades with play), so **spline preferred over
 key**.
+The shaft has two sections: a plain **Ø25 k6 journal** for the 6005 bearing,
+and a **splined section** where the bevel gear mounts (spline is NOT at the
+bearing seat).
+
 | Feature | Standard | Value |
 |---------|----------|-------|
-| Torque coupling | **spline** — DIN 5480 / involute (or ISO 4156) | low backlash, self-centering, distributes torque |
+| Spline (metric, involute, 30° PA) | **DIN 5480** (or ISO 4156) | shaft `W 25×1×23×8f` · hub `N 25×1×23×9H` |
 | Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** |
 | General tolerances | ISO 2768-m | non-critical dims |
 | End chamfers | — | 1×45° |
+
+> Stay **metric**: DIN 5480 involute spline (module-based) matches the rest
+> of the metric standardization. Source metric splined shafts on TraceParts
+> (`DIN 5480 spline shaft`) / Misumi, or model in Fusion. Avoid inch
+> (McMaster) splined shafts — they force an inch-bore bearing at this seat.
 
 > Spline chosen over a parallel key because it is printed anyway (no
 > machining cost) and gives less backlash — important for clean pitch/roll
