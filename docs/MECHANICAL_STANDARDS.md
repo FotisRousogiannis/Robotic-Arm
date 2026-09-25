@@ -139,8 +139,10 @@ bearing seat).
 
 - Shaft & bevel bore must use **identical** m/z/α; the generator derives
   tip/root automatically.
-- **Axial retention** (so the bevel doesn't slide off): printed **shoulder**
-  on one side + **circlip DIN 471 (Ø25)** or an end screw+washer on the other.
+- **Axial retention** (so the bevel doesn't slide off) — **as built**:
+  a **heat-set insert (M4/M5) in the shaft end** + an **ISO 4762 screw +
+  washer** through the bevel/cap that clamps it against a printed shoulder.
+  Printed-friendly, no groove needed. (Alt: circlip DIN 471 Ø25.)
 - Bearing seat: **Ø25 k6**; general tolerances ISO 2768-m; end chamfers 1×45°.
 
 > Stay metric (DIN 5480, module-based). Avoid inch (McMaster) splined shafts
