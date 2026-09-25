@@ -34,19 +34,30 @@ Quantities (from the electrical components list):
 
 ---
 
-## Bearings
-_TBD — user to provide codes/dimensions (bore × OD × width)._
+## Bearings (deep-groove ball, 2RS sealed)
 
-| Location | Bearing | bore×OD×W | Qty | Status |
-|----------|---------|-----------|-----|--------|
-| | | | | 🛒 |
+| Bearing | bore × OD × W (mm) | Notes | Likely joint | Status |
+|---------|--------------------|-------|--------------|--------|
+| 6902 2RS | 15 × 28 × 7 | thin-section, compact | wrist (light) | ✅ |
+| 6002 2RS | 15 × 32 × 9 | standard 15 mm | wrist / small | ✅ |
+| 6004 2RS | 20 × 42 × 12 | mid | bone2 | ✅ |
+| 6005 2RS | 25 × 47 × 12 | mid-large | bone1 | ✅ |
+| 6208 2RS | 40 × 80 × 18 | heavy, large | **base** (main rotation) | ✅ |
 
-## Shafts
-_Derived from bearing bore (Ø = bore, h7 fit). TBD once bearings known._
+> "Likely joint" is a proposal — confirm which bearing sits where.
 
-| Location | Ø × length | Material | Qty | Status |
-|----------|-----------|----------|-----|--------|
-| | | | | ❓ |
+## Shafts / hubs (Ø = bearing bore, h7 fit)
+
+Large bores → the bearing is usually the **joint pivot**: outer race held by
+one part, a hub on the inner race rotates. So the "shaft" is often a hub /
+short stub, not a long steel rod (and the bore can pass cables through).
+
+| Joint | Ø (=bore) | Solid shaft or hub? | Status |
+|-------|-----------|---------------------|--------|
+| base | 40 | hub-in-bore (hollow → cabling) | ❓ |
+| bone1 | 25 | ❓ | ❓ |
+| bone2 | 20 | ❓ | ❓ |
+| wrist | 15 | ❓ | ❓ |
 
 ## Gears (differentials & reductions)
 _Standard: 20° pressure angle; module TBD from existing prints._
