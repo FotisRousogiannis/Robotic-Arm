@@ -115,21 +115,36 @@ servo → planetary(1:36) → OUTPUT SHAFT ──[spline]──► BEVEL gear �
 Drives the differential's bevel gear — **backlash & centering are critical**
 here (differential mixing degrades with play), so **spline preferred over
 key**.
+**All parts are 3D printed** → the bevel gear's bore is a **printed internal
+DIN 5480 spline** that slides onto the shaft's splined section. No press fit
+(cracks/creeps printed plastic), no coupling, no locking device needed.
+
 The shaft has two sections: a plain **Ø25 k6 journal** for the 6005 bearing,
 and a **splined section** where the bevel gear mounts (spline is NOT at the
 bearing seat).
 
-| Feature | Standard | Value |
-|---------|----------|-------|
-| Spline (metric, involute, 30° PA) | **DIN 5480** (or ISO 4156) | shaft `W 25×1×24×8f` · hub `N 25×1×24×9H` (z = dB/m − 1.1 = 24) |
-| Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** |
-| General tolerances | ISO 2768-m | non-critical dims |
-| End chamfers | — | 1×45° |
+### DIN 5480 spline values (enter in the Fusion gear generator)
+| Parameter | Value |
+|-----------|-------|
+| Module m | 1 |
+| Teeth z | 24 (= dB/m − 1.1 = 23.9 → 24) |
+| Pressure angle α | 30° |
+| Profile shift x | −0.05 |
+| Reference diameter dB | 25 mm |
+| Pitch diameter (m·z) | 24.00 mm |
+| Base diameter (d·cos30°) | 20.78 mm |
+| Shaft designation | `W 25×1×24×8f` |
+| Bevel bore designation | `N 25×1×24×9H` (same params, internal) |
+| **Print clearance** | **0.10–0.15 mm** backlash (printers run oversize) |
 
-> Stay **metric**: DIN 5480 involute spline (module-based) matches the rest
-> of the metric standardization. Source metric splined shafts on TraceParts
-> (`DIN 5480 spline shaft`) / Misumi, or model in Fusion. Avoid inch
-> (McMaster) splined shafts — they force an inch-bore bearing at this seat.
+- Shaft & bevel bore must use **identical** m/z/α; the generator derives
+  tip/root automatically.
+- **Axial retention** (so the bevel doesn't slide off): printed **shoulder**
+  on one side + **circlip DIN 471 (Ø25)** or an end screw+washer on the other.
+- Bearing seat: **Ø25 k6**; general tolerances ISO 2768-m; end chamfers 1×45°.
+
+> Stay metric (DIN 5480, module-based). Avoid inch (McMaster) splined shafts
+> — they force an inch-bore bearing at this seat.
 
 > Spline chosen over a parallel key because it is printed anyway (no
 > machining cost) and gives less backlash — important for clean pitch/roll
