@@ -1,5 +1,18 @@
 # Bill of Materials (BOM)
 
+## System performance (estimated)
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Payload @1 m | **~3–4 kg** continuous | after subtracting arm self-weight; ~19 kg momentary/stall |
+| Joint speed | **~8.3°/s** | servo 300°/s ÷ 36; 90° in ~11 s |
+| Joint torque (pitch, differential) | **~64 N·m** continuous / ~214 N·m stall | 2× actuators add |
+| Arm self-weight | **4–5 kg** | CoM ~0.5 m assumed |
+| Actuator | servo 40 kg + 1:36 planetary | continuous-rotation servo + AS5600 |
+
+> Speed/torque trade-off: 1:36 gives high torque but is slow. A 1:18
+> variant would double speed with still-ample torque (~10 kg payload gross).
+
+
 Master components list for the robotic arm — single source of truth.
 Add items as they are chosen/ordered. Quantities are per full arm unless
 noted. Keep in sync with `Robotic_Arm_Project/Hardware/`.
