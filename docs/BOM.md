@@ -65,10 +65,24 @@ _bore = shaft Ø; interface = servo spline. TBD._
 
 ---
 
-## Electronics (summary — see Hardware/Electrical Components.md)
-- Raspberry Pi 4 (4 GB) — onboard ROS 2 node/bridge
-- PCA9685 16-ch PWM driver (I²C)
-- TCA9548A I²C multiplexer (for AS5600 encoders)
-- AS5600 magnetic encoders (per axis)
-- KUAIQU SPS-C3010 PSU (30V/10A) + XY5008E buck converters
-- ESP32 (per-segment controllers — planned PCBs)
+## Electronics
+
+| Part | Role | Interface | Qty | Status |
+|------|------|-----------|-----|--------|
+| Raspberry Pi 4 (4 GB) | onboard ROS 2 node/bridge | — | 1 | ✅ |
+| ESP32 | per-segment controller (planned PCBs) | — | per segment | ❓ |
+| PCA9685 (16-ch, 12-bit PWM) | servo driver | I²C (0x40) | 1 | ✅ |
+| TCA9548A (1→8 I²C mux) | fan out same-address AS5600 | I²C (0x70) | 1 | ✅ |
+| AS5600 (12-bit magnetic encoder) | joint angle feedback | I²C (0x36, via mux) | 6 | ✅ |
+| ADS1115 (16-bit ADC) | reads analog force sensors | I²C (0x48) | 5 | ✅ |
+| FSR402 (force-sensitive resistor) | gripper contact/force | analog → ADS1115 | 2 | ✅ |
+| KUAIQU SPS-C3010 PSU | main supply, 30 V/10 A, shows A | mains | 1 | ✅ |
+| XY5008E DC-DC buck (6–55V, 5A, CC/CV) | step down to servo/logic rail | — | 2 | ✅ |
+
+Notes:
+- **AS5600 ×6** = one per DOF; all share I²C address 0x36 → the **TCA9548A**
+  selects one at a time (why the mux is needed).
+- **ADS1115 + FSR402** = gripper force/contact sensing (analog FSR → 16-bit
+  ADC over I²C). Out of scope for current motion work.
+- All I²C devices share the same bus (Pi now / ESP32 later): PCA9685 0x40,
+  TCA9548A 0x70, ADS1115 0x48, AS5600 0x36 (behind mux).
