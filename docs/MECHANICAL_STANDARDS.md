@@ -100,7 +100,44 @@ planet_m1.0_z24_sun12_ring60.stl
 shaft_d25_L120_h7.stl           shaft Ø25, length 120, h7
 ```
 
-## 9. I²C address map (electronics, for reference)
+## 9. Output interface — ISO (gearbox → Link)
+
+### Output shaft (Ø25, on 6005)
+| Feature | Standard | Value |
+|---------|----------|-------|
+| Bearing seat (rotating inner ring) | ISO 286 | **Ø25 k6** (light interference) |
+| Torque transmission | DIN 6885-1 / ISO 773 | **parallel key 8×7 mm**, shaft keyway depth 4.0 mm |
+| General tolerances | ISO 2768-m | non-critical dims |
+| End chamfers | — | 1×45° |
+
+> Alternative: transmit torque **directly through the flange** (bolted to a
+> shoulder) instead of a key — often cleaner on printed parts.
+
+### Flange (ISO 9409-1 robot mechanical interface)
+Standard circular flange = pitch circle + bolt count + centering spigot.
+**Default: ISO 9409-1-50-4-M6**
+- PCD **50 mm**, **4 × M6** (ISO 4762)
+- centering **spigot H7/h7** (alignment by fit, not screws)
+- Torque check (worst case 73.5 N·m): 73.5/0.025 = 2940 N ÷ 4 = **735 N/bolt**
+  → M6 ample ✅
+- Heavier option: **ISO 9409-1-63-6-M6** (PCD 63, 6 × M6)
+
+Use the same flange on base / wrist / Link for interchangeability.
+
+## 10. Standard parts — sourcing (CAD)
+Pull ready, dimensioned models into Fusion; model only custom parts.
+
+| Part | Standard | Source (Fusion) |
+|------|----------|-----------------|
+| Bearings (6002/6005/6208…) | ISO | McMaster (Insert → McMaster-Carr) / TraceParts / Misumi |
+| Screws (M3–M6 socket head) | ISO 4762 | McMaster / Fusion fastener lib / TraceParts |
+| Parallel key 8×7 | DIN 6885-1 | TraceParts / Misumi |
+| Precision shaft Ø25 k6 | ISO 286 | McMaster / Misumi (configurable) |
+| Heat-set inserts M3 | — | McMaster |
+| **ISO 9409-1 flange** | ISO 9409-1 | **model in Fusion** (spec, not a purchased part) |
+| Gears (planetary/bevel) | — | model in Fusion (per §4) |
+
+## 11. I²C address map (electronics, for reference)
 | Device | Address |
 |--------|---------|
 | PCA9685 (PWM) | 0x40 |
@@ -119,6 +156,8 @@ shaft_d25_L120_h7.stl           shaft Ø25, length 120, h7
 - [x] Servo spline: 25T
 
 ## Open items to confirm
+- [ ] Output torque path: parallel key vs direct-through-flange
+- [ ] Flange size: ISO 9409-1-50-4-M6 (default) vs 63-6-M6
 - [ ] Bevel gear module/teeth (needs differential envelope)
-- [ ] Differential flange PCD (proposed 30 mm)
 - [ ] Placement of remaining bearings (6208 / 6004 / 6902)
+- [ ] Planet gear face width (for tooth-stress recheck)
