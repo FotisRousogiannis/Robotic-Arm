@@ -72,8 +72,9 @@ Standardize on the set already in use:
 - Bore = shaft/hub Ø of that joint.
 
 ## 5. Couplings & servo interface
-- **Servo output spline: 25T ❓ confirm** → standard **25T spline hub / disc
-  horn** as the servo interface everywhere.
+- **Servo output spline: 25T** (standard for 35–40 kg standard-size servos;
+  spline Ø ≈ 5.9 mm — confirm by counting teeth / checking the horns) →
+  standard **25T spline hub / disc horn** as the servo interface everywhere.
 - **servo → sun gear** of the planetary via a 25T spline hub.
 - **shaft ↔ shaft**: **clamp-type coupling** (no backlash) sized to shaft Ø,
   preferred over set-screw for precision.
