@@ -6,6 +6,19 @@ confirmation against existing parts.
 
 ---
 
+## 0. Material assignment policy
+**Default PLA+; PC only where extreme strength/heat is needed; TPU for
+flexible parts.** Rule: *carries the load/torque or gets hot → PC; else PLA+.*
+
+| Material | Parts |
+|----------|-------|
+| **PC** | all gears (planetary sun/planet/ring — esp. output stage; bevel), planet carrier, output/spline hubs, load-critical links, anything next to the servo (heat) |
+| **PLA+** | covers, electronics holders, sensor mounts, brackets, non-load structure, prototypes |
+| **TPU** | gripper pads/fingertips, feet, cable strain-relief, dampers/bushings |
+
+> ⚠️ PLA+ **creeps** under sustained load and softens near heat (Tg ~60°C).
+> Keep it off gears, shafts/hubs, and the main load-bearing links.
+
 ## 1. Fasteners
 - **Socket head cap screws, ISO 4762 (DIN 912)**, metric, throughout.
 - **M3** = primary · **M4 / M5** = structural / high-load.
