@@ -39,22 +39,33 @@ Standardize on the set already in use:
 ## 4. Gears — global rules
 - **Pressure angle: 20°** everywhere (non-negotiable for meshing).
 - **Module: keep to few values.** Gears of different module DO NOT mesh.
-  - Proposed: **module 1.0** general, **1.5** for high-torque output stages.
-  - ❓ Align with the module of existing prints (`Gears/4h_mod_gear*`).
-- **Min 17 teeth** on any pinion (avoid undercut); existing 22T spur is fine.
+  - Planetary gears: **helical, normal module mₙ = 1, helix 30°** (actual).
+  - **Min ~17 teeth** on a pinion for spur; helical tolerates fewer (sun is
+    16T helical — OK thanks to the helix angle raising virtual tooth count).
 - **Center distance**: `C = module × (z₁ + z₂) / 2`.
 - Printed material: **PETG** ok, **Nylon (PA)** preferred for loaded gears.
 
-### 4a. Planetary gearbox (per joint)
-2-stage, **1:6 × 1:6 = 1:36**. Per 1:6 stage (ratio = 1 + Zring/Zsun → 5):
+### 4a. Planetary gearbox (per joint) — ACTUAL design
+2-stage, **1:6 × 1:6 = 1:36**. **Helical gears, 30° helix angle.**
 
-| Element | Teeth |
-|---------|-------|
-| Sun | 12 |
-| Planet | 24 (×3 or ×4 ❓) |
-| Ring | 60 |
+| Element | Teeth | Hand | File |
+|---------|-------|------|------|
+| Sun | 16 | L | Sun Helical Gear (16L@30.00) |
+| Planet (×3) | 32 | R | Healical Gear (32R@30.00) |
+| Ring | 80 | R | Ring Gear |
 
-Assembly check: (Zsun + Zring) = 72, divisible by 3 and 4 ✓.
+- **Normal module mₙ = 1**, **helix angle β = 30°**, 20° PA.
+- Ratio = 1 + 80/16 = **6.0** ✅ · 3 planets: (16+80)/3 = 32 ✓
+- Helix hand: sun L, planet R (external mesh = opposite), ring R (internal =
+  same as planet) ✓
+- Transverse module mₜ = mₙ/cos β = 1/cos30° = **1.1547**.
+  Pitch diameters (d = mₜ·z): sun 18.48 · planet 36.95 · ring 92.38 mm.
+  Center distance sun↔planet = (18.48+36.95)/2 = **27.7 mm**
+  = (ring−planet)/2 ✓ consistent.
+- Helical gears create **axial thrust** — deep-groove bearings absorb it;
+  keep it in mind for shaft location.
+- Housing parts (CAD): Ring Gear, Planet Carrier, Planet Carrier Rotating
+  Base, Cap, Servo holder, Servo Cap, servo arm cap.
 
 ### 4b. Bevel gears (differentials)
 - **Miter 1:1** (equal teeth), **90°**, 20° PA.
@@ -96,9 +107,11 @@ shaft_d25_L120_h7.stl           shaft Ø25, length 120, h7
 
 ---
 
+## Confirmed
+- [x] Planetary: helical, mₙ=1, 30° helix, sun 16 / planet 32 (×3) / ring 80
+- [x] Planet count: 3
+
 ## Open items to confirm
 - [ ] Servo spline tooth count (25T?)
-- [ ] Module of existing printed gears
-- [ ] Planet count per stage (3 or 4)
 - [ ] Bevel gear module/teeth (needs differential envelope)
 - [ ] Differential flange PCD (proposed 30 mm)

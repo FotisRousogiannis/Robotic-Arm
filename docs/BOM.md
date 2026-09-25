@@ -87,14 +87,15 @@ Performance (servo QY3240MG 40 kg + 1:36, ~0.8 efficiency):
 > Trade-off: huge torque, slow. If more speed is wanted, a 1:18 variant
 > (1:6 × 1:3) doubles output speed with still-ample torque.
 
-Planetary standard (per 1:6 stage — ratio = 1 + Zring/Zsun, so Zring/Zsun = 5):
-| Element | Teeth |
-|---------|-------|
-| Sun | 12 |
-| Planet | 24 (×3 or ×4) |
-| Ring | 60 |
-- module: common per stage, 20° PA (proposed 1.0; 1.5 on output for torque)
-- assembly check: (Zsun+Zring)=72 divisible by 3 and 4 ✓
+Planetary (actual) — **helical, mₙ=1, helix 30°, 20° PA**:
+| Element | Teeth | Hand |
+|---------|-------|------|
+| Sun | 16 | L |
+| Planet (×3) | 32 | R |
+| Ring | 80 | R |
+- Ratio = 1 + 80/16 = 6.0 ✓ · 3 planets: (16+80)/3 = 32 ✓
+- Pitch Ø (mₜ=1.1547): sun 18.48 · planet 36.95 · ring 92.38 mm; center
+  distance sun↔planet = 27.7 mm
 
 ## Gears — differentials
 _Standard: 20° pressure angle; miter 1:1 @90°; module per envelope._
