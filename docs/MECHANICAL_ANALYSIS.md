@@ -100,12 +100,33 @@ Options:
 - **Backlash** accumulates over 2 stages + differential; the output AS5600
   (closed loop) compensates static error but not reversal backlash.
 
+## Differential bevel gears — sizing for 5 kg
+Bevel tooth force (pitch r = 50 mm): **~740 N operating**, ~2240 N stall.
+Face limit on a Ø100 miter = cone distance/3 ≈ 23.6 mm.
+
+Required face width vs module (keep Ø100):
+| Module | z (Ø100) | Nylon σ30 | PA-CF σ50 |
+|--------|----------|-----------|-----------|
+| 1 (current) | 100 | ~55 mm ❌ | ~33 mm ❌ |
+| 2 | 50 | ~29 mm 🟠 | ~17 mm ✅ |
+| **2.5** | **40** | ~23 mm 🟠 | **~14 mm ✅** |
+| 3 | 33 | ~20 mm ✅ | ~12 mm ✅ |
+
+**Recommended (keeps Ø100, 1:1 miter, 5 kg target):** bevel **module 2.5,
+z=40, 20° PA**, face **~15–18 mm**, **PA-CF** (or plain Nylon at ~22 mm) +
+firmware torque limit. Module 1 is undersized — raise the module, not the
+diameter.
+
+Levers (any/all): ↑module (2.5–3), ↑face (≤23 mm), PA-CF material, ↑bevel
+diameter (Ø150 → F_t ≈ 490 N so m2 suffices), torque limit.
+
 ## Summary — required changes for 5 kg
 | # | Change | Priority |
 |---|--------|----------|
-| 1 | Output gears in Nylon/PA-CF + wider face width | 🔴 must |
-| 2 | Holding strategy (brake / duty limit) | 🔴 must for sustained hold |
-| 3 | Reduce helix to 15–20° | 🟠 recommended |
-| 4 | Firmware torque/current limit | 🟠 recommended |
-| 5 | Reduce arm weight / mass near base | 🟢 improves margin & speed |
-| — | **Keep 1:36 reduction** | ✅ optimal for 5 kg |
+| 1 | **Bevel gears → module 2.5, z40 (keep Ø100), face ~15–18 mm, PA-CF** | 🔴 must |
+| 2 | Planetary output stage → higher module / PA-CF + wider face | 🔴 must |
+| 3 | Holding strategy (brake / duty limit) | 🔴 must for sustained hold |
+| 4 | Firmware torque/current limit | 🔴 must (caps stall spikes) |
+| 5 | Reduce helix to 15–20° | 🟠 recommended |
+| 6 | Reduce arm weight / mass near base | 🟢 improves margin & speed |
+| — | **Keep 1:36 reduction & Ø100 bevel diameter** | ✅ optimal for 5 kg |
